@@ -2,11 +2,9 @@ import { useMutation } from '@apollo/client'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import BoardWriteUI from './BoardWrite.presenter'
-import {CREATE_BOARD} from './BoardWrite.quries'
+import {CREATE_BOARD, UPDATE_BOARD} from './BoardWrite.quries'
 
-
-
-export default function BoardWrite(){
+export default function BoardWrite(props){
     const router = useRouter()
 
     const [myWriter, setMyWriter] = useState("")
@@ -17,6 +15,7 @@ export default function BoardWrite(){
 
     // const [myMessage, setMyMessage] = useState("")
     const [createBoard] = useMutation(CREATE_BOARD)
+    const [updateBoard] = useMutation(UPDATE_BOARD)
 
     function onChangeWriter(event){
         setMyWriter(event.target.value)
@@ -61,7 +60,25 @@ export default function BoardWrite(){
         // setMyMessage(result.data.createBoard.number)
 
         // router.push('/05-06-dynamic-board-detail/' + result.data.createBoard.number) // =>  /05-06-dynamic-board-detail/17
-        router.push(`/05-06-dynamic-board-detail/${result.data.createBoard.number}`) // =>  /05-06-dynamic-board-detail/17  =>  템플릿 리터럴
+        router.push(`/08-04-board-detail/${result.data.createBoard.number}`) // =>  /05-06-dynamic-board-detail/17  =>  템플릿 리터럴
+    }
+
+    async function onClickUpdate(){
+        if(myWriter !== "" || myTitle !== "" || myContents !== ""){
+            const myVariables = {
+                number: Number(router.query.number),
+            }
+            if(myWriter !== "") myVariables.writer = myWriter
+            if(myTitle !== "") myVariables.title = myTitle
+            if(myContents !== "") myVariables.contents = myContents
+    
+            await updateBoard({
+                variables: myVariables
+            })
+            router.push(`/08-04-board-detail/${router.query.number}`)
+        } else {
+            alert('아무것도 변경된 것이 없습니다!')
+        }
     }
 
     return (
@@ -70,7 +87,10 @@ export default function BoardWrite(){
             onChangeTitle={onChangeTitle}
             onChangeContents={onChangeContents}
             onClickGraphqlApi={onClickGraphqlApi}
+            onClickUpdate={onClickUpdate}
             isActive={isActive}
+            isEdit={props.isEdit}
+            data={props.data}
         />
     )
 }
