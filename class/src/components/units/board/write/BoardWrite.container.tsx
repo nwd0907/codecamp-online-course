@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import BoardWriteUI from './BoardWrite.presenter'
 import {CREATE_BOARD, UPDATE_BOARD} from './BoardWrite.quries'
+import { IMyVariables } from './BoardWrite.types'
 
 export default function BoardWrite(props){
     const router = useRouter()
@@ -65,7 +66,7 @@ export default function BoardWrite(props){
 
     async function onClickUpdate(){
         if(myWriter !== "" || myTitle !== "" || myContents !== ""){
-            const myVariables = {
+            const myVariables: IMyVariables = {
                 number: Number(router.query.number),
             }
             if(myWriter !== "") myVariables.writer = myWriter
