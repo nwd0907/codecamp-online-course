@@ -23,7 +23,7 @@ export default function MapFruitsPage(){
     return (
         <div>
             {fruits.map((el) => (
-                <div>
+                <div key={el.number}>
                     <span>{el.number}</span>
                     <span>{el.title}</span>
                 </div>
